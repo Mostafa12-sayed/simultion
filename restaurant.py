@@ -139,16 +139,18 @@ cooker_duration=0
 
 # Check the total profit at the end of each month
 def monthly_check(env):
-    global total_profit, Tax, Restaurant_place_installment, Employees_monthly_salaries,  total_profit_count
-    
+    global total_profit, Tax, Restaurant_place_installment, Employees_monthly_salaries, total_profit_count
+
     while True:
         yield env.timeout(30 * 24 * 60)
-        total_profit[total_profit_count] -= (Tax * total_profit[total_profit_count])+ Restaurant_place_installment + Employees_monthly_salaries
-            
-        #print(total_profit_count,total_profit)
+        total_profit[total_profit_count] -= Restaurant_place_installment + Employees_monthly_salaries
+        tax = (Tax * total_profit[total_profit_count])
+        total_profit[total_profit_count] -= tax
         total_profit_count += 1
         total_profit.append(0)
-        
+
+        #print(total_profit_count, total_profit)
+
 
 def run(env):
     global w1,w2,w3,total_profit, months, normal, special,cusPerDay1, customer_count,  days, hours, total_profit_count,wait1,wait2,wait3
@@ -158,7 +160,7 @@ def run(env):
     env.process(monthly_check(env))
     cookers_q = simpy.PriorityResource(env, capacity=2)
     waiterr = simpy.Resource(env, capacity=3)
-    i = 0           # used as a customer name
+              
     c = 1           # counter for days list   days=[1, 2, 3, 4, ..]
     a = 1           # we multiply this factor to 12 to check if the day is end or not .. is >=12  .. >=36 and so on ..
     cusPerDay = 0   # number of customers per day
