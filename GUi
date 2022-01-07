@@ -1,0 +1,267 @@
+import sys
+import matplotlib.pyplot as plt
+import numpy as np
+import matplotlib
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.figure import Figure
+
+import restaurant as smpj
+n= smpj.total_profit
+
+
+matplotlib.use('TkAgg')
+import tkinter as tk
+
+
+
+
+
+
+def startSimulation():
+    try:
+        NOS = int(numOfSim.get())
+        NOM = int(numOfmonth.get())
+
+    except:
+        print("This is not a number.")
+        strval.set("This is not a number.")
+    smpj.days.clear()
+    smpj.customer_arrival.clear()
+    smpj.g = [0, 0, 0, 0, 0]
+    # Canvas1.delete("all")
+    #  Canvas2.delete("all")
+
+
+    smpj.startSim(NOS,NOM)
+    n=smpj.total_profit
+
+    strval.set("Avrage Profite = %s" % (sum(n)/len(n)))
+
+    Charts('Number of customers per days', 'Days', 'Number of customers', smpj.days, smpj.cusPerDay1, "blue",
+           Canvas1)
+    Charts2('served customers by each game', 'Games', 'Number of served customers', smpj.days, smpj.wait1 ,  smpj.wait2 , smpj.wait3 , "blue", Canvas2)
+def Charts(title, xlabel, ylabel, xval, yval, color, Canvas):
+    fig = Figure(figsize=(12, 14), dpi=50, tight_layout=True)
+    ax = fig.add_subplot(111)
+    ax.bar(xval, yval, color='red')
+    ax.set_title(title, fontsize=17)
+    ax.set_xlabel(xlabel, fontsize=17)
+    ax.set_ylabel(ylabel, fontsize=15)
+    canvas = FigureCanvasTkAgg(fig, master=Canvas)
+    canvas.get_tk_widget().pack()
+    canvas.draw()
+
+def Charts2(title, xlabel, ylabel, xval, yval1,yval2,yval3, color, Canvas):
+    fig = Figure(figsize=(8, 6), dpi=50, tight_layout=True,)
+    ax = fig.add_subplot(111)
+    l=[]
+    w1=[]
+    w2=[]
+    w3=[]
+    labels = xval
+    print(labels)
+    waiter1 = yval1
+    waiter2 = yval2
+    waiter3 = yval3
+    for i in labels:
+        l.append(i)
+        if i ==20:
+            break
+    for j in waiter1:
+        w1.append(j)
+        if len(w1) ==20:
+            break
+    for j in waiter2:
+        w2.append(j)
+        if len(w2) ==20:
+            break
+    for j in waiter3:
+        w3.append(j)
+        if len(w3) == 20:
+            break
+    x = np.arange(len(l))  # the label locations
+    width = 0.2  # the width of the bars
+    fig, ax = plt.subplots()
+    plt.bar(x - 0.2, w1, width, color='blue')
+    plt.bar(x, w2, width, color='orange')
+    plt.bar(x + 0.2, w3, width, color='green')
+    plt.legend(["Waiter 1", "Waiter 2", "Waiter 3"])
+    ax.set_ylabel('Number of served customers ')
+    ax.set_xlabel('Days ')
+    ax.set_title('Average daily load chart')
+    ax.set_xticks(x, l)
+    fig.tight_layout()
+    canvas = FigureCanvasTkAgg(fig, master=Canvas)
+    canvas.get_tk_widget().pack()
+    canvas.draw()
+
+    #plt.show()
+
+def StopSimulation():
+    sys.exit()
+    sys.stdout.flush()
+
+
+def init(top, gui, *args, **kwargs):
+    global w, top_level, root
+    w = gui
+    top_level = top
+    root = top
+
+
+def start_gui():
+    global val, w, root
+    root = tk.Tk()
+    top = Sim(root)
+    init(root, top)
+    root.mainloop()
+w = None
+class Sim:
+    # def deleteCan(self, can):
+    #   self.canvas.delete(can)
+    def __init__(self, top=None):
+        _bgcolor = '#A10DFC'
+        _fgcolor = '#000000'
+        _compcolor = '#d9d9d9'
+        _ana1color = '#d9d9d9'
+        _ana2color = '#ececec'
+
+        top.geometry("600x450+383+106")
+        top.minsize(120, 1)
+        top.maxsize(1370, 1000)
+        top.resizable(1, 1)
+        top.title("Simulation")
+        top.configure(background="#FAE1CE")
+        top.configure(highlightbackground="#f0f0f0f0f0f0")
+
+        self.Inputs = tk.LabelFrame(top)
+        self.Inputs.place(relx=0.017, rely=0.022, relheight=0.344
+                          , relwidth=0.967)
+        self.Inputs.configure(relief='groove')
+        self.Inputs.configure(foreground="black")
+        self.Inputs.configure(text='''Inputs''')
+        self.Inputs.configure(background="#FAE1CE")
+
+        global numOfSim,numOfmonth
+
+        numOfSim = tk.Entry(self.Inputs)
+        numOfmonth= tk.Entry(self.Inputs)
+
+        self.TnOfSimulations=numOfmonth
+        self.TnOfSimulations.place(relx=0.328, rely=0.59, relheight=0.155
+                                   , relwidth=0.576, bordermode='ignore')
+        self.TnOfSimulations.configure(background="#FAA85B")
+        self.TnOfSimulations.configure(font="TkTextFont")
+        self.TnOfSimulations.configure(foreground="black")
+        self.TnOfSimulations.configure(highlightbackground="#d9d9d9")
+        self.TnOfSimulations.configure(highlightcolor="black")
+        self.TnOfSimulations.configure(insertbackground="black")
+        self.TnOfSimulations.configure(selectbackground="blue")
+        self.TnOfSimulations.configure(selectforeground="white")
+        #self.TnOfSimulations.configure(wrap="word")
+        #self.TnOfSimulations.configure(textvariable=nOfSimText)
+        self.TnOfSimulations_n =numOfSim
+        self.TnOfSimulations_n.place(relx=0.328, rely=0.35, relheight=0.155
+                                   , relwidth=0.576, bordermode='ignore')
+        self.TnOfSimulations_n.configure(background="#FAA85B")
+        self.TnOfSimulations_n.configure(font="TkTextFont")
+        self.TnOfSimulations_n.configure(foreground="black")
+        self.TnOfSimulations_n.configure(highlightbackground="#d9d9d9")
+        self.TnOfSimulations_n.configure(highlightcolor="black")
+        self.TnOfSimulations_n.configure(insertbackground="black")
+        self.TnOfSimulations_n.configure(selectbackground="blue")
+        self.TnOfSimulations_n.configure(selectforeground="white")
+
+        self.Number_Of_Simulations = tk.Label(self.Inputs)
+        self.Number_Of_Simulations.place(relx=0.017, rely=0.355, height=21
+                                         , width=154, bordermode='ignore')
+        self.Number_Of_Simulations.configure(background="#FAE1CE")
+        self.Number_Of_Simulations.configure(disabledforeground="#a3a3a3")
+        self.Number_Of_Simulations.configure(foreground="#000000")
+        self.Number_Of_Simulations.configure(text='''Number Of Simulations''')
+
+        self.Number_of_month = tk.Label(self.Inputs)
+        self.Number_of_month.place(relx=0.034, rely=0.581, height=21, width=124
+                                   , bordermode='ignore')
+        self.Number_of_month.configure(background="#FAE1CE")
+        self.Number_of_month.configure(disabledforeground="#a3a3a3")
+        self.Number_of_month.configure(foreground="#000000")
+        self.Number_of_month.configure(text='''Number of month''')
+
+        self.Start = tk.Button(top)
+        self.Start.place(relx=0.683, rely=0.382, height=24, width=97)
+        self.Start.configure(activebackground="#04e10f")
+        self.Start.configure(activeforeground="#ffffff")
+        self.Start.configure(background="#FAA85B")
+        self.Start.configure(disabledforeground="#a3a3a3")
+        self.Start.configure(foreground="#000000")
+        self.Start.configure(command=startSimulation)
+        self.Start.configure(highlightbackground="#d9d9d9")
+        self.Start.configure(highlightcolor="black")
+        self.Start.configure(pady="0")
+        self.Start.configure(text='''Run Simulotion''')
+
+        self.Exit = tk.Button(top)
+        self.Exit.place(relx=0.865, rely=0.382, height=24, width=67)
+        self.Exit.configure(activebackground="#f20006")
+        self.Exit.configure(activeforeground="white")
+        self.Exit.configure(activeforeground="#000000")
+        self.Exit.configure(background="#FAA85B")
+        self.Exit.configure(disabledforeground="#a3a3a3")
+        self.Exit.configure(foreground="#000000")
+        self.Exit.configure(highlightbackground="#d9d9d9")
+        self.Exit.configure(highlightcolor="black")
+        self.Exit.configure(pady="0")
+        self.Exit.configure(command=StopSimulation)
+        self.Exit.configure(text='''Stop''')
+
+        self.Labelframe1 = tk.LabelFrame(top)
+        self.Labelframe1.place(relx=0.017, rely=0.444, relheight=0.544
+                               , relwidth=0.967)
+        self.Labelframe1.configure(relief='groove')
+        self.Labelframe1.configure(foreground="black")
+        self.Labelframe1.configure(text='''Outputs''')
+        self.Labelframe1.configure(background="#FAE1CE")
+
+        global Canvas1, Canvas2, status, strval
+        Canvas1 = tk.Canvas(self.Labelframe1)
+        Canvas2 = tk.Canvas(self.Labelframe1)
+        status = tk.Label(self.Labelframe1)
+
+        strval = tk.StringVar()
+
+
+
+        #strval.set(smpj.total_profit)
+
+        self.Labelframe2 = tk.Label(top,textvariable = strval)
+        self.Labelframe2.place(relx=0.25, rely=0.47, relheight=0.06, relwidth=0.5)
+        self.Labelframe2.configure(relief='groove')
+        self.Labelframe2.configure(foreground="black")
+        self.Labelframe2.configure(background="#F2DFB3")
+        #self.Labelframe2.text("status")
+        #var.set("mostafa")
+
+
+
+        self.Canvas1 = Canvas1
+        self.Canvas1.place(relx=0.45, rely=0.2, relheight=0.747, relwidth=0.5
+                           , bordermode='ignore')
+        self.Canvas1.configure(background="#F2DFB3")
+        self.Canvas1.configure(borderwidth="2")
+        self.Canvas1.configure(insertbackground="black")
+        self.Canvas1.configure(relief="ridge")
+        self.Canvas1.configure(selectbackground="blue")
+        self.Canvas1.configure(selectforeground="#F2DFB3")
+
+        self.Canvas2 = Canvas2
+        self.Canvas2.place(relx=0.028, rely=0.2, relheight=0.747
+                           , relwidth=0.4, bordermode='ignore')
+        self.Canvas2.configure(background="#F2DFB3")
+        self.Canvas2.configure(borderwidth="2")
+        self.Canvas2.configure(insertbackground="black")
+        self.Canvas2.configure(relief="ridge")
+        self.Canvas2.configure(selectbackground="blue")
+        self.Canvas2.configure(selectforeground="white")
+if __name__ == '__main__':
+    start_gui()
