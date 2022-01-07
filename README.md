@@ -1,4 +1,4 @@
-# AMUSEMENT PARK SIMULATION PROJECT
+# Resturant SIMULATION PROJECT
 
 * This is a simple simulation project of an amusement park
 * aims to know the number of months to gain the business cost
@@ -9,9 +9,9 @@
 
 ## Files
 
-The project includes two files "AMUSEMENT_PARK_SIMULATION_PROJECT.py" and "GUI.py" 
+The project includes two files "Resturant.py" and "GUI.py" 
 
-1) AMUSEMENT_PARK_SIMULATION_PROJECT.py
+1) Resturant.py
 This file includes some libraries that we use in simulation such as "simpy" library and "randint" to generate random numbers and some variables to make the simulation model.
 
 2) GUI.py
